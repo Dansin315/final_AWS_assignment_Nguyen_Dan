@@ -1,0 +1,10 @@
+results/
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/*.tfvars
+!terraform/terraform.tfvars.example
+terraform/*.out
+terraform/crash.log
+terraform/crash.*.log
+.DS_Store

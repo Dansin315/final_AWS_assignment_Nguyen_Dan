@@ -1,0 +1,23 @@
+aws_region    = "us-east-1"
+name_prefix   = "final-wp-ha"
+instance_type = "t3.micro"
+
+# Optional troubleshooting only. Prefer your IP as x.x.x.x/32 if enabled.
+enable_ssh = false
+key_name   = null
+ssh_cidr   = "0.0.0.0/0"
+
+asg_min_size         = 2
+asg_desired_capacity = 2
+asg_max_size         = 4
+
+db_instance_class    = "db.t3.micro"
+db_allocated_storage = 20
+db_name              = "wordpressdb"
+db_master_username   = "wpadmin"
+
+# Do not put db_master_password here.
+# Set it in the shell before terraform plan/apply:
+# export TF_VAR_db_master_password='Use-A-Lab-Only-Password-Here'
+
+wordpress_table_prefix = "wp_"
