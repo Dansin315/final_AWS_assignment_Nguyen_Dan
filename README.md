@@ -53,6 +53,9 @@ Private RDS MySQL database
     ├── user-data.sh
     ├── variables.tf
     └── versions.tf
+└── wp-content
+    └── themes
+         └── aws-cards-market-theme.zip
 ```
 
 ## Requirements
@@ -75,14 +78,15 @@ terraform plan -out plan.out
 terraform apply plan.out
 ```
 
-After apply finishes, open the `wordpress_url` output in a browser.
+After apply finishes, open the 
+`http://final-wp-ha-alb-577588890.us-east-1.elb.amazonaws.com` output in a browser.
 
 ## Benchmark
 
 From the repository root:
 
 ```bash
-TARGET_URL="http://PASTE_ALB_DNS_NAME_HERE/" bash scripts/run-sample-scenarios.sh
+TARGET_URL="http://final-wp-ha-alb-577588890.us-east-1.elb.amazonaws.com" bash scripts/run-sample-scenarios.sh
 bash scripts/analyze-summary.sh
 ```
 
@@ -97,6 +101,3 @@ terraform destroy
 
 ## Notes
 
-- Do not commit `terraform.tfvars`, `*.tfstate`, `plan.out`, AWS keys, or database passwords.
-- This is a class lab project, so the RDS instance uses `skip_final_snapshot = true` and `backup_retention_period = 0` to make cleanup simpler.
-- WordPress media files uploaded to EC2 local storage are not shared between instances. The attached HA README mentioned S3 media offloading, but the attached code did not include a working S3 offload implementation, so this final repository does not invent one.
