@@ -99,5 +99,52 @@ cd terraform
 terraform destroy
 ```
 
-## Notes
+```mermaid
+flowchart LR
+    User["User Browser"]
+    Bench["ApacheBench scripts<br/>scripts/<br/>latency, throughput,<br/>concurrency, p95,<br/>failed requests"]
+    UserData["terraform/user-data.sh<br/>installs Apache, PHP,<br/>WordPress and /health.html"]
+
+    subgraph AWS["AWS Cloud"]
+      subgraph VPC["VPC"]
+        subgraph PublicEntry["Public entry"]
+          ALB["Application Load Balancer<br/>HTTP listener :80<br/>ALB Security Group"]
+          TG["Target Group<br/>WordPress EC2 targets<br/>health check: /health.html"]
+        end
+
+        subgraph ASG["Auto Scaling Group<br/>desired WordPress instances across two subnets"]
+          EC2A["EC2 WordPress Instance A<br/>Amazon Linux 2023<br/>Apache HTTP Server<br/>PHP<br/>WordPress"]
+          EC2B["EC2 WordPress Instance B<br/>Amazon Linux 2023<br/>Apache HTTP Server<br/>PHP<br/>WordPress"]
+        end
+
+        RDS[("RDS MySQL<br/>WordPress database<br/>Port 3306<br/>RDS Security Group")]
+      end
+    end
+
+    User -->|"HTTP :80 public access"| ALB
+    ALB -->|"forward requests"| TG
+    TG -->|"HTTP :80 if healthy"| EC2A
+    TG -->|"HTTP :80 if healthy"| EC2B
+    TG -.->|"GET /health.html"| EC2A
+    TG -.->|"GET /health.html"| EC2B
+    EC2A -->|"MySQL :3306"| RDS
+    EC2B -->|"MySQL :3306"| RDS
+    UserData -.->|"automated setup"| EC2A
+    UserData -.->|"automated setup"| EC2B
+    Bench -->|"ApacheBench traffic"| ALB
+```
+
+## Security Group Flow
+
+```mermaid
+flowchart LR
+    Browser["User browser"]
+    ALBSG["ALB security group<br/>allows public HTTP :80"]
+    WebSG["Web security group<br/>allows HTTP only from ALB SG"]
+    RDSSG["RDS security group<br/>allows MySQL only from Web SG"]
+    Browser --> ALBSG --> WebSG --> RDSSG
+```
+
+
+
 
