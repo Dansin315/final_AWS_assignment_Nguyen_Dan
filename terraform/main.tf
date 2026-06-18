@@ -226,13 +226,14 @@ resource "aws_launch_template" "wordpress" {
   vpc_security_group_ids = [aws_security_group.web.id]
 
   user_data = base64encode(templatefile("${path.module}/user-data.sh", {
-    name_prefix            = var.name_prefix
-    db_name                = var.db_name
-    db_username            = var.db_master_username
-    db_password            = var.db_master_password
-    db_host                = aws_db_instance.wordpress.address
-    db_port                = aws_db_instance.wordpress.port
-    wordpress_table_prefix = var.wordpress_table_prefix
+  name_prefix            = var.name_prefix
+  db_name                = var.db_name
+  db_username            = var.db_master_username
+  db_password            = var.db_master_password
+  db_host                = aws_db_instance.wordpress.address
+  db_port                = aws_db_instance.wordpress.port
+  wordpress_table_prefix = var.wordpress_table_prefix
+  theme_zip_url          = var.theme_zip_url
   }))
 
   tag_specifications {

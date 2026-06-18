@@ -123,3 +123,9 @@ variable "wordpress_table_prefix" {
     error_message = "wordpress_table_prefix may contain only letters, numbers, and underscores."
   }
 }
+
+variable "theme_zip_url" {
+  description = "Public URL of the WordPress theme zip file"
+  type        = string
+  default     = ""
+}

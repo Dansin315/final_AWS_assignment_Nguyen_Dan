@@ -9,6 +9,7 @@ DB_PASSWORD="${db_password}"
 DB_HOST="${db_host}"
 DB_PORT="${db_port}"
 TABLE_PREFIX="${wordpress_table_prefix}"
+THEME_ZIP_URL="${theme_zip_url}"
 
 dnf upgrade -y
 
@@ -28,7 +29,7 @@ if ! dnf install -y "$${LAMP_PACKAGES[@]}"; then
   dnf install -y "$${LAMP_PACKAGES[@]}"
 fi
 
-dnf install -y gzip openssl tar
+dnf install -y gzip openssl tar unzip
 dnf install -y mariadb105 || dnf install -y mariadb105-server
 
 if ! command -v curl >/dev/null 2>&1; then
@@ -96,6 +97,13 @@ tar -xzf /tmp/latest.tar.gz -C /tmp
 rm -rf /var/www/html/*
 cp -r /tmp/wordpress/* /var/www/html/
 cp /var/www/html/wp-config-sample.php /var/www/html/wp-config.php
+
+if [ -n "$${THEME_ZIP_URL}" ]; then
+  echo "Installing AWS Cards Market theme from $${THEME_ZIP_URL}"
+  curl -L "$${THEME_ZIP_URL}" -o /tmp/aws-cards-market-theme.zip
+  rm -rf /var/www/html/wp-content/themes/aws-cards-market
+  unzip -q /tmp/aws-cards-market-theme.zip -d /var/www/html/wp-content/themes/
+fi
 
 replace_placeholder() {
   local key="$1"
