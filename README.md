@@ -99,6 +99,8 @@ cd terraform
 terraform destroy
 ```
 
+## UML
+
 ```mermaid
 flowchart LR
     User["User Browser"]
